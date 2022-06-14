@@ -1,14 +1,29 @@
-//para usar la herramienta debug de motoko, antes la tenemos que importar.
 import Debug "mo:base/Debug";
 
-//creo la clase que va a contenter el canister, en motoko las clases las creo con la palabra "actor"
 actor DBank {
-  var currentValue = 300;
-  currentValue := 100;
+  stable var currentValue = 300;
+  // currentValue := 100;
 
-  //las constantes las declaramos de la siguiente manera:
   let id = 98234598054;
+  
+  public func topUp(amount: Nat) {
+    currentValue += amount;
+    Debug.print(debug_show(currentValue));
+  };
 
-  //este comando lo uso para imprimir en la consola lo que quiera, si uso una var tengo que ponerla dentr de la función debug_show().
-  Debug.print(debug_show(id));
+  public func withdrawl(amount: Nat) {
+    let tempValue: Int = currentValue - amount; 
+    if (tempValue >= 0) {
+      currentValue -= amount;
+      Debug.print(debug_show(currentValue));
+    } else {
+      Debug.print("The amount is too large.");
+    }
+  };
+
+  public query func checkBalance(): async Nat {
+    return currentValue;
+  };
+
+  // topUp();
 }
